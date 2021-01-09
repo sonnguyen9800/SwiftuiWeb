@@ -16,6 +16,7 @@ struct ContentView: View {
         VStack {
             Text("Hello")
             WebView(text: $textHtml)
+            Text(textHtml)
         }
     }
 
