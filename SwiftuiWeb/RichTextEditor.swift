@@ -61,7 +61,7 @@ public class RichTextEditor: UIView, WKScriptMessageHandler, WKNavigationDelegat
     private let placeholderLabel = UILabel()
 
     public override init(frame: CGRect = .zero) {
-        placeholderLabel.textColor = UIColor.lightGray.withAlphaComponent(0.65)
+        placeholderLabel.textColor = UIColor.red.withAlphaComponent(0.65)
 
         let scriptPath = Bundle.main.path(forResource: "edit", ofType: "js")
         let scriptContent = try? String(contentsOfFile: scriptPath!, encoding: String.Encoding.utf8)
