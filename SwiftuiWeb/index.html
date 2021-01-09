@@ -2,8 +2,419 @@
 <html>
     <head>
         <meta name="viewport" content="initial-scale=1.0" />
+        <style>
+            .toolbar-wrapper {
+              padding: 0 10px;
+            }
+
+            .wrapper {
+              display: flex;
+              justify-content: space-between;
+            }
+
+            .editor-wrapper {
+              display: flex;
+              flex-grow: 1;
+              padding: 10px;
+            }
+
+            #editor {
+              padding: 10px;
+              outline: none;
+              width: 100%;
+              box-shadow: 0px 0 4px rgba(0, 0, 0, 0.3)
+            }
+
+            #debug {
+              display: flex;
+              flex-basis: 10%;
+              flex-shrink: 0;
+            }
+
+            ul#toolbar {
+              display: block;
+              margin: 0;
+              padding: 0;
+            }
+
+            ul#toolbar>li,
+            ul.submenu>li {
+              display: inline-block;
+              margin: 2px;
+              position: relative;
+            }
+
+            button {
+              padding: 4px;
+              outline: none;
+              border: none;
+              border-radius: 2px;
+            }
+
+            button:hover {
+              color: white;
+              background: red;
+              opacity: 1 !important;
+            }
+
+            li.popup:hover ul {
+              display: flex !important;
+            }
+
+            ul.submenu {
+              top: 20px;
+              left: 0px;
+              position: absolute;
+              display: none;
+              background: white;
+              padding: 2px;
+              box-shadow: 0px 0 4px rgba(0, 0, 0, 0.3);
+              z-index: 1;
+              flex-wrap: wrap;
+              justify-content: space-around;
+              width: 48px;
+            }
+
+            ul.submenu>li button {
+              width: 15px;
+              height: 15px;
+            }
+
+            ul.submenu>li button:hover {
+              cursor: pointer;
+              box-shadow: 0px 0 4px rgba(0, 0, 0, 0.8)
+            }
+
+
+            button.active {
+              background: red;
+              opacity: 0.5;
+              color: white;
+              transition: 0.2s;
+            }
+
+            .popup button.active::after {
+              content: "✔";
+              position: absolute;
+              left: 3.5px;
+              top: 6.5px;
+            }
+
+            .popup button.active {
+              border: 1px solid black ;
+              opacity: 1;
+            }
+
+            .popup button[data-color=white] {
+              border: 1px solid black !important;
+            }
+
+            .popup button[data-color=white]::after {
+              color: black;
+            }
+        </style>
+        <script>
+            function getToolbarState() {
+              return {
+                foreColor: RGBToHex(document.queryCommandValue("ForeColor")),
+                backColor: getBackColor() || document.queryCommandValue("backcolor"),
+                bold: document.queryCommandState("bold"),
+                italic: document.queryCommandState("italic"),
+                fontName: document.queryCommandValue("fontName"),
+                fontSize: document.queryCommandValue("fontSize"),
+                underline: document.queryCommandState("Underline"),
+                strikeThrough: document.queryCommandState("strikeThrough"),
+                insertunorderedlist: document.queryCommandState("insertunorderedlist"),
+                insertorderedlist: document.queryCommandState("insertorderedlist"),
+                justifyleft: document.queryCommandState("justifyleft"),
+                justifycenter: document.queryCommandState("justifycenter"),
+                justifyright: document.queryCommandState("justifyright"),
+              };
+            }
+
+            function getBackColor() {
+              var node = document.getSelection().focusNode;
+              var editor = document.getElementById('editor');
+              var isNonDefault = function(c) { return c && c !== 'transparent';}
+
+              // If TEXTNODE set to parentNode
+              if (node.nodeType == 3) {
+                node = node.parentNode;
+              }
+
+              while (node && node !== editor) {
+                var tempColor = node.style && node.style.backgroundColor;
+
+                if (isNonDefault(tempColor)) {
+                  return tempColor;
+                }
+
+                node = node.parentNode;
+              }
+
+              return 'transparent';
+            }
+
+            function focusEditor() {
+              document.getElementById('editor').focus();
+            }
+
+            function updateToolbar() {
+              var editor = document.getElementById('editor');
+              var focusNode = document.getSelection().focusNode;
+
+              if (!editor.contains(focusNode)) {
+                return;
+              }
+
+              var state = getToolbarState();
+              
+              log(state);
+              updateButtonState(state);
+            }
+
+            function updatePopupValue(key, value) {
+              var activeBtn = document.querySelector('#' + key + ' button.active');
+              var btn = document.querySelector('#' + key +'  [data-value="' + value + '"]');
+
+              if (!btn) {
+                return;
+              }
+
+              if (activeBtn) {
+                activeBtn.classList.remove('active');
+              }
+
+              btn.classList.add('active');
+            }
+
+            function updateButtonState(config) {
+              Object.keys(config).forEach(k => {
+
+                if (k == 'foreColor' || k == 'backColor') {
+
+                  updatePopupValue(k, config[k]);
+
+                  return;
+                }
+
+                var el = document.querySelector('[data-action="' + k + '"]');
+
+                if (!el) {
+                  return;
+                }
+
+                if (el.tagName == 'SELECT') {
+                  el.value = config[k];
+                }
+
+                if (config[k] == true) {
+                  el.classList.add('active');
+                } else {
+                  el.classList.remove('active');
+                }
+              });
+            }
+
+            function RGBToHex(rgb) {
+              if (!rgb || rgb.indexOf('rgb(') < 0) {
+                return rgb;
+              }
+
+              var sep = rgb.indexOf(",") > -1 ? "," : " ";
+              var colors = rgb.substr(4).split(")")[0].split(sep);
+              var r = (+colors[0]).toString(16);
+              var g = (+colors[1]).toString(16);
+              var b = (+colors[2]).toString(16);
+
+              r = `0${r}`.slice(-2);
+              g = `0${g}`.slice(-2);
+              b = `0${b}`.slice(-2);
+
+              return "#" + r + g + b;
+            }
+
+            function onAction(e) {
+              var value = null;
+              var target = e.target;
+              
+              if (target.tagName != 'BUTTON') {
+
+                return;
+              }
+
+              var action = target.getAttribute('data-action');
+
+              if (action == 'foreColor' || action == "backColor") {
+                value = target.getAttribute('data-value');
+              }
+             
+                 document.execCommand(action, false, value);
+
+              updateToolbar();
+              focusEditor();
+            }
+
+            function onChange(e) {
+              var value = e.target.value;
+              var action = e.target.getAttribute('data-action');
+
+              document.execCommand(action, false, value);
+
+              updateToolbar();
+              focusEditor();
+            }
+
+            function bindEventHandlers() {
+              var toolbar = document.getElementById('toolbar');
+              var dropDowns = [].slice.call(document.getElementsByTagName('select'));
+
+              toolbar.addEventListener("click", onAction);
+              dropDowns.forEach(d => d.addEventListener("change", onChange));
+              document.addEventListener("selectionchange", updateToolbar);
+            }
+
+            function initForeColor() {
+              var colors = [
+                "#9d1811",
+                "#e4ac64",
+                "#5b8828",
+                "#440062",
+                "#ffffff",
+                "#000000"
+              ];
+              var foreColor = document.getElementById('foreColor');
+              var fragment = document.createDocumentFragment();
+
+              colors.forEach(color => {
+                var li = document.createElement('li');
+                var btn = document.createElement('button');
+
+                btn.style.backgroundColor = color;
+                btn.setAttribute("data-action", "foreColor");
+                btn.setAttribute("data-value", color);
+
+                if (color === '#ffffff') {
+                  btn.setAttribute('data-color', 'white');
+                }
+
+                li.appendChild(btn);
+                fragment.appendChild(li);
+              });
+
+              foreColor.appendChild(fragment);
+            }
+
+            function initBackColor() {
+              var colors = [
+                "rgb(157, 24, 17)",
+                "rgb(164, 96, 22)",
+                "rgb(91, 136, 40)",
+                "rgb(253, 239, 43)",
+                "rgb(112, 172, 237)",
+                "rgb(255, 255, 255)",
+              ];
+              var foreColor = document.getElementById('backColor');
+              var fragment = document.createDocumentFragment();
+
+              colors.forEach(color => {
+                var li = document.createElement('li');
+                var btn = document.createElement('button');
+
+                btn.style.backgroundColor = color;
+                btn.setAttribute("data-value", color);
+                btn.setAttribute("data-action", "backColor");
+
+                if (color === 'rgb(255, 255, 255)') {
+                  btn.setAttribute('data-color', 'white');
+                }
+
+                li.appendChild(btn);
+                fragment.appendChild(li);
+              });
+
+              foreColor.appendChild(fragment);
+            }
+
+            function log(state) {
+              var output = "<pre>{" + "\n"
+              var debug = document.getElementById("debug");
+
+              Object.keys(state).forEach(function(k) {
+                  output += '' + k + ':' + state[k] + ', \n';
+              });
+
+              output += "}</pre>";
+
+              debug.innerHTML = output;
+            }
+
+            function init() {
+              initForeColor();
+              initBackColor();
+              bindEventHandlers();
+
+              document.body.style.fontSize = 7;
+              document.body.style.fontFamily = '"Helvetica Neue",  Helvetica, Arial, sans-serif';
+            }
+
+            init();
+
+
+        </script>
     </head>
     <body>
-        <div id="editor" contenteditable="true"></div>
+        
+        <div class="toolbar-wrapper">
+          <ul id="toolbar">
+            <li><button data-action="bold">Bold</button></li>
+            <li><button data-action="italic">Italic</button></li>
+            <li><button data-action="underline">UnderLine</button></li>
+            <li><button data-action="strikeThrough">Strike</button></li>
+            <li><button data-action="justifyleft">Left</button></li>
+            <li><button data-action="justifycenter">Center</button></li>
+            <li><button data-action="justifyright">Right</button></li>
+            <li><button data-action="insertunorderedlist">Bullet</button></li>
+            <li><button data-action="insertorderedlist">List</button></li>
+            <li class="popup">
+              <button>ForeColor</button>
+              <ul class="submenu" id="foreColor">
+              </ul>
+            </li>
+            <li class="popup">
+              <button>Highlight</button>
+              <ul class="submenu" id="backColor">
+              </ul>
+            </li>
+            <li>
+              <select data-action="fontName" id="fontName">
+                <option value='"Helvetica Neue", Helvetica, Arial, sans-serif'>Modern</option>
+                <option value='"bookman old style", "new york", times, serif'>Classic Wide</option>
+                <option value='"courier new", courier, monaco, monospace, sans-serif'>Courier New</option>
+                <option value='garamond, "new york", times, serif'>Garamond</option>
+                <option value='"lucida console", sans-serif'>Lucida Console</option>
+              </select>
+            </li>
+            <li>
+              <select data-action="fontSize" id="fontSize">
+                <option value="1">Tiny</option>
+                <option value="2">Small</option>
+                <option value="3">Medium</option>
+                <option value="6">Large</option>
+                <option value="7">X-Large</option>
+              </select>
+            </li>
+          </ul>
+        </div>
+        <div class="wrapper">
+          <div class="editor-wrapper">
+            <div id="editor" contenteditable="true"></div>
+          </div>
+          <div id="debug"></div>
+        </div>
+
+
+        
+<!--        <div id="editor" contenteditable="true"></div>-->
     </body>
 </html>

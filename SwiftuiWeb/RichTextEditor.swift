@@ -76,9 +76,11 @@ public class RichTextEditor: UIView, WKScriptMessageHandler, WKNavigationDelegat
                 forMainFrameOnly: true
             )
         )
+        
 
         editorView = WKWebView(frame: .zero, configuration: configuration)
-
+        editorView.configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+        
         super.init(frame: frame)
 
         [RichTextEditor.textDidChange, RichTextEditor.heightDidChange].forEach {

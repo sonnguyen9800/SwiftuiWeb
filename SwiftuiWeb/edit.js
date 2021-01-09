@@ -13,3 +13,4 @@ editor.addEventListener("input", function() {
 document.addEventListener("selectionchange", function() {
     window.webkit.messageHandlers.heightDidChange.postMessage(document.body.offsetHeight);
 }, false);
+
