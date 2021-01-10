@@ -14,7 +14,7 @@ struct ContentView: View {
     @State var textHtml: String = ""
     var body: some View {
         VStack {
-            Text("Hello")
+//            Text("Hello")
             WebView(text: $textHtml)
             Text(textHtml)
         }
@@ -32,7 +32,7 @@ struct WebView: UIViewRepresentable {
   }
    
   func updateUIView(_ editor: RichTextEditor, context: Context) {
-    editor.text = text
+    text = editor.bodyContent
   }
 }
 struct ContentView_Previews: PreviewProvider {

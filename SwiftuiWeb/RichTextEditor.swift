@@ -26,6 +26,12 @@ fileprivate class WeakScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 }
 
+class BodyContent: ObservableObject {
+    @Published var data = "myData"
+    init(content: String) {
+        self.data = content
+    }
+}
 public class RichTextEditor: UIView, WKScriptMessageHandler, WKNavigationDelegate, UIScrollViewDelegate {
 
     
@@ -34,7 +40,9 @@ public class RichTextEditor: UIView, WKScriptMessageHandler, WKNavigationDelegat
     private static let defaultHeight: CGFloat = 60
 
     public weak var delegate: RichTextEditorDelegate?
-    
+
+    private var bodyContentModel = BodyContent(content: "")
+    public var bodyContent : String
     public var height: CGFloat = RichTextEditor.defaultHeight
 
     public var placeholder: String? {
@@ -77,7 +85,7 @@ public class RichTextEditor: UIView, WKScriptMessageHandler, WKNavigationDelegat
             )
         )
         
-
+        bodyContent = ""
         editorView = WKWebView(frame: .zero, configuration: configuration)
         editorView.configuration.defaultWebpagePreferences.allowsContentJavaScript = true
         
@@ -123,6 +131,7 @@ public class RichTextEditor: UIView, WKScriptMessageHandler, WKNavigationDelegat
     }
 
     public required init?(coder aDecoder: NSCoder) {
+        self.bodyContent = ""
         super.init(coder: aDecoder)
     }
 
@@ -132,6 +141,7 @@ public class RichTextEditor: UIView, WKScriptMessageHandler, WKNavigationDelegat
             guard let body = message.body as? String else { return }
             placeholderLabel.isHidden = !body.htmlToPlainText.isEmpty
             delegate?.textDidChange(text: body)
+            self.bodyContent = body
         case RichTextEditor.heightDidChange:
             guard let height = message.body as? CGFloat else { return }
             self.height = height > RichTextEditor.defaultHeight ? height + 30 : RichTextEditor.defaultHeight
