@@ -65,9 +65,6 @@
 		E4F1718625A88DF3002829D4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4F1718525A88DF3002829D4 /* Preview Assets.xcassets */; };
 		E4F1718825A88DF3002829D4 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F1718725A88DF3002829D4 /* Persistence.swift */; };
 		E4F1718B25A88DF3002829D4 /* SwiftuiWeb.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E4F1718925A88DF3002829D4 /* SwiftuiWeb.xcdatamodeld */; };
-		E4F1719425A8975F002829D4 /* RichTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F1719325A8975F002829D4 /* RichTextEditor.swift */; };
-		E4F1719E25A89CCA002829D4 /* edit.js in Resources */ = {isa = PBXBuildFile; fileRef = E4F1719C25A89CCA002829D4 /* edit.js */; };
-		E4F1719F25A89CCA002829D4 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = E4F1719D25A89CCA002829D4 /* index.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -133,9 +130,6 @@
 		E4F1718725A88DF3002829D4 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		E4F1718A25A88DF3002829D4 /* SwiftuiWeb.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SwiftuiWeb.xcdatamodel; sourceTree = "<group>"; };
 		E4F1718C25A88DF3002829D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E4F1719325A8975F002829D4 /* RichTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichTextEditor.swift; sourceTree = "<group>"; };
-		E4F1719C25A89CCA002829D4 /* edit.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = edit.js; sourceTree = "<group>"; };
-		E4F1719D25A89CCA002829D4 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,8 +256,6 @@
 				E45890F825AADF2B001150A8 /* KeyboardManager.swift */,
 				E45890F925AADF2B001150A8 /* ViewController.swift */,
 				E458908A25AADF03001150A8 /* RichEditorView */,
-				E4F1719D25A89CCA002829D4 /* index.html */,
-				E4F1719C25A89CCA002829D4 /* edit.js */,
 				E4F1717E25A88DF2002829D4 /* SwiftuiWebApp.swift */,
 				E4F1718025A88DF2002829D4 /* ContentView.swift */,
 				E4F1718225A88DF3002829D4 /* Assets.xcassets */,
@@ -271,7 +263,6 @@
 				E4F1718C25A88DF3002829D4 /* Info.plist */,
 				E4F1718925A88DF3002829D4 /* SwiftuiWeb.xcdatamodeld */,
 				E4F1718425A88DF3002829D4 /* Preview Content */,
-				E4F1719325A8975F002829D4 /* RichTextEditor.swift */,
 			);
 			path = SwiftuiWeb;
 			sourceTree = "<group>";
@@ -345,7 +336,6 @@
 				E45890D625AADF03001150A8 /* justify_right@2x.png in Resources */,
 				E45890CF25AADF03001150A8 /* indent@2x.png in Resources */,
 				E45890E525AADF03001150A8 /* h5@2x.png in Resources */,
-				E4F1719F25A89CCA002829D4 /* index.html in Resources */,
 				E45890CC25AADF03001150A8 /* indent@3x.png in Resources */,
 				E45890F025AADF03001150A8 /* assert.js in Resources */,
 				E45890E725AADF03001150A8 /* subscript@2x.png in Resources */,
@@ -379,7 +369,6 @@
 				E45890D225AADF03001150A8 /* ordered_list@2x.png in Resources */,
 				E45890F125AADF03001150A8 /* rich_editor.js in Resources */,
 				E45890EA25AADF03001150A8 /* insert_image@2x.png in Resources */,
-				E4F1719E25A89CCA002829D4 /* edit.js in Resources */,
 				E45890EB25AADF03001150A8 /* justify_left@2x.png in Resources */,
 				E45890D825AADF03001150A8 /* ordered_list@3x.png in Resources */,
 				E45890E625AADF03001150A8 /* clear@2x.png in Resources */,
@@ -410,7 +399,6 @@
 				E45890FB25AADF2B001150A8 /* ViewController.swift in Sources */,
 				E45890FA25AADF2B001150A8 /* KeyboardManager.swift in Sources */,
 				E45890C925AADF03001150A8 /* RichEditorWebView.swift in Sources */,
-				E4F1719425A8975F002829D4 /* RichTextEditor.swift in Sources */,
 				E4F1717F25A88DF2002829D4 /* SwiftuiWebApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
