@@ -13,7 +13,7 @@ struct SwiftuiWebApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(textHtml: "Demo")
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
